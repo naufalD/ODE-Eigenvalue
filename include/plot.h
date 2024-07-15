@@ -3,7 +3,7 @@
 
 #include <QwtPlot>
 
-class Plot
+class Plot : public QwtPlot
 {
 public:
     Plot(QWidget* parent = nullptr);

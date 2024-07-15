@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-double kSq(double x){
-    return pow(x, 2);
+double kSq(double t){
+    return pow(t, 2);
 }
 
 vector<double> odeRK4(double h, double t, vector<double> yMinus1,  function<vector<double>(double, vector<double>)> theFunction){
@@ -20,8 +20,9 @@ vector<double> odeRK4(double h, double t, vector<double> yMinus1,  function<vect
 
 
 
-double numerovODE(double h, double t, vector<double> yMinus1,  function<vector<double>(double, vector<double>)> theFunction){
-    double numerator1 {2*theFunction(yMinus1)*(1-(5/12)*pow(h,2)*kSq())};
-    double numerator2 {theFunction(yMinus1)*(1+(5/12)*pow(h,2)*kSq())};
-    double denominator {1+pow(h,2)*kSq()/12}
+double numerovODE(double h, double t, vector<double> yMinusn,  function<vector<double>(double, vector<double>)> theFunction){
+    double numerator1 {2*yMinusn[1]*(1-(5/12)*pow(h,2)*kSq(t))};
+    double numerator2 {yMinusn[2]*(1+(5/12)*pow(h,2)*kSq(t-h))};
+    double denominator {1+pow(h,2)*kSq(t+h)/12};
+
 }
