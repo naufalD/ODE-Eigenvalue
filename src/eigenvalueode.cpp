@@ -56,12 +56,8 @@ vector<double> odeRK4(double h, double t, double kSq, vector<double> yMinus1,  f
 double deltaNormWave(vector<double> yL, vector<double>yR){
     double L {0};
     double R {0};
-
-    if (yL[0]<pow(10, -6)) L = yL[1]/pow(10, -6);
-    else L = yL[1]/yL[0];
-
-    if (yL[0]<pow(10, -6)) R = yR[1]/pow(10, -6);
-    else R = yR[1]/yR[0];
+    L = yL[1]/yL[0];
+    R = yR[1]/yR[0];
 
     return (L-R)/(L+R);
 }

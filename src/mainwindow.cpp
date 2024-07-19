@@ -6,16 +6,17 @@
 
 using namespace std;
 
-static double dh {0.01};
+static double dh {0.0001};
 //static double E  {-10}; //MeV
 static double V0 {35}; //MeV
-//static double mu  {0.50412241252*931.5}; //MeV
-//static double hBar {6.582119569}; //Mev*s
+static double mu  {0.50412241252*931.5}; //MeV
+static double hBar {6.582119569}; //Mev*s
 //static double m {2.0141*931.5}; //MeV
 static double accuracy {pow(10, -3)};
-static double R {2.1};
-static double xMatch {2.1};
+static double R {2.1*pow(10,-3)};
+static double xMatch {0.0021};
 static double farValue {pow(10,-2)};
+static double constQ{(2*mu)/pow(hBar,2)};
 
 double Vr(double radius, double V){
     if (abs(radius)<R) return -V;
@@ -28,7 +29,7 @@ double Vr(double radius, double V){
 
 vector<double> theFunction(double x, double E, vector<double> y){
     //return {y[1], kSq(x, E)*-y[0]};
-    return {y[1], -(0.4829)*(E-Vr(x, V0))*y[0]};
+    return {y[1], -(constQ)*(E-Vr(x, V0))*y[0]};
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -36,33 +37,33 @@ MainWindow::MainWindow(QWidget *parent)
 {
     m_plot = new Plot();
     m_label = new QLabel();
-    for (double i {-(R+1)}; i<(R+1); i=i+0.01){
+    for (double i {-(R)}; i<(R); i=i+dh){
         m_plot->plotWell(i, Vr(i, V0));
     }
 
     double E1 {-20};
-    double E2 {-0.5};
+    double E2 {0};
     double E {E1};
     //double EBest {E1};
     //double ErrBest {1};
     vector<double> y1 {0,0};
     vector<double> y2 {0,0};
     y1[0] = -farValue;
-    y1[1]= -sqrt(-E*0.4829)*y1[0];
+    y1[1]= -sqrt(-E*constQ)*y1[0];
 
     y2[0] = farValue;
-    y2[1]= -sqrt(-E*0.4829)*y2[0];
+    y2[1]= -sqrt(-E*constQ)*y2[0];
 
 
 
     double normDelta1 {1};
     double normDelta2 {1};
 
-    for (double i {-50}; i<xMatch; i=i+dh){
+    for (double i {-0.003}; i<xMatch; i=i+dh){
         y1 = odeRK4(dh, i, E, y1, &theFunction);
     }
 
-    for (double i {50}; i>xMatch; i=i-dh){
+    for (double i {0.003}; i>xMatch; i=i-dh){
         y2 = odeRK4(-dh, i, E, y2, &theFunction);
     }
     normDelta1 = deltaNormWave(y1, y2);
@@ -75,16 +76,16 @@ MainWindow::MainWindow(QWidget *parent)
         rounds +=1;
 
         y1[0] = -farValue;
-        y1[1]= -sqrt(-E*0.4829)*y1[0];
+        y1[1]= -sqrt(-E*constQ)*y1[0];
 
         y2[0] = farValue;
-        y2[1]= -sqrt(-E*0.4829)*y2[0];
+        y2[1]= -sqrt(-E*constQ)*y2[0];
 
-        for (double i {-50}; i<xMatch; i=i+dh){
+        for (double i {-0.003}; i<xMatch; i=i+dh){
             y1 = odeRK4(dh, i, E, y1, &theFunction);
         }
 
-        for (double i {50}; i>xMatch; i=i-dh){
+        for (double i {0.003}; i>xMatch; i=i-dh){
             y2 = odeRK4(-dh, i, E, y2, &theFunction);
         }
 
@@ -101,19 +102,19 @@ MainWindow::MainWindow(QWidget *parent)
     double renorm = y1[0]/y2[0];
 
     y1[0] = -farValue;
-    y1[1]= -sqrt(-E*0.4829)*y1[0];
+    y1[1]= -sqrt(-E*constQ)*y1[0];
 
     y2[0] = farValue;
-    y2[1]= -sqrt(-E*0.4829)*y2[0];
+    y2[1]= -sqrt(-E*constQ)*y2[0];
 
-    for (double i {-50}; i<xMatch; i=i+dh){
+    for (double i {-0.003}; i<xMatch; i=i+dh){
         y1 = odeRK4(dh, i, E, y1, &theFunction);
-        if (i>-(R+2)) m_plot->updatePlot1(i, y1[0]*pow(10,-8));
+        if (i>-(R)) m_plot->updatePlot1(i, pow(y1[0]*pow(10,1),1));
     }
 
-    for (double i {50}; i>xMatch; i=i-dh){
+    for (double i {0.003}; i>xMatch; i=i-dh){
         y2 = odeRK4(-dh, i, E, y2, &theFunction);
-        if (i<(R+2)) m_plot->updatePlot2(i, y2[0]*renorm*pow(10,-8));
+        if (i<(R)) m_plot->updatePlot2(i, pow(y2[0]*renorm*pow(10,1),1));
     }
     m_label->setText(QString::number(E));
 
