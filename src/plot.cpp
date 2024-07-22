@@ -11,12 +11,12 @@ Plot::Plot( QWidget* parent) : QwtPlot(parent)
     //setAxisScale( QwtAxis::XBottom, 0, 50.5 );
 
     m_curve1 = new QwtPlotCurve();
-    m_curve1->setPen(Qt::blue, 3);
+    m_curve1->setPen(Qt::blue, 1.5);
     m_curve1->setCurveAttribute(QwtPlotCurve::Fitted, true);
     m_curve1->attach(this);
 
     m_curve2 = new QwtPlotCurve();
-    m_curve2->setPen(Qt::red, 3);
+    m_curve2->setPen(Qt::red, 1.5);
     m_curve2->setCurveAttribute(QwtPlotCurve::Fitted, true);
     m_curve2->attach(this);
 

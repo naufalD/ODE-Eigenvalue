@@ -5,9 +5,9 @@
 
 using namespace std;
 
-
-vector<double> numerovODE(double h, vector<double> kSq, vector<double> yMinus1, vector<double> yMinus2,  function<vector<double>(double, vector<double>)> theFunction);
+double numerovODE(double h, double t, double E, double yMinus1, double yMinus2, function<double(double, double)> kSq);
 vector<double> odeRK4(double h, double t, double E, vector<double> yMinus1, function<vector<double>(double, double, vector<double>)> theFunction);
 double deltaNormWave(vector<double> yL, vector<double>yR);
+double deltaNormWaveNumerov(vector<double> yL, vector<double>yR);
 
 #endif // EIGENVALUEODE_H

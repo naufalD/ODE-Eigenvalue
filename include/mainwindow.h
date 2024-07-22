@@ -14,12 +14,13 @@ class MainWindow : public QWidget
 
 public:
     MainWindow(QWidget *parent = nullptr);
-
-protected:
-    virtual void timerEvent( QTimerEvent* ) QWT_OVERRIDE;
+    void plotRK4();
+    void plotNumerov();
 
 private:
-    Plot *m_plot;
-    QLabel *m_label;
+    Plot *m_plot1;
+    QLabel *m_label1;
+    Plot *m_plot2;
+    QLabel *m_label2;
 };
 #endif // MAINWINDOW_H
