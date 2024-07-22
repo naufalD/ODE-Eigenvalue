@@ -54,4 +54,5 @@ compile_commands.json
 *_qmlcache.qrc
 
 # mac
-**/.DS_Store
+.DS_Store
+
