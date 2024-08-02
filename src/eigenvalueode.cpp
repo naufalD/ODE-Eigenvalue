@@ -8,7 +8,7 @@ double numerovODE(double h, double t, double E, double yMinus1, double yMinus2, 
     double numerator1 {0};
     double numerator2 {0};
 
-    tempNum = (1.0-5.0*tempH*kSq(t-h, E))*2.0;
+    tempNum = 2.0*(1.0-5.0*tempH*kSq(t-h, E));
     numerator1 = tempNum*yMinus1;
 
     tempNum = (1.0+tempH*kSq(t-2*h, E));
@@ -47,7 +47,7 @@ vector<double> odeRK4(double h, double t, double E, vector<double> yMinus1,  fun
     for (int i {0}; i<size;++i) k4[i] = h*k4[i];
 
     vector<double> toReturn(size, 0);
-    for (int i {0}; i<size;++i) toReturn[i] = yMinus1[i] +(1.0/6.0)*(k1[i]+2*k2[i]+2*k3[i]+k4[i]);
+    for (int i {0}; i<size;++i) toReturn[i] = yMinus1[i] +(1.0/6.0)*(k1[i]+2.0*k2[i]+2.0*k3[i]+k4[i]);
 
     return toReturn;
 }

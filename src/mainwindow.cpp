@@ -7,28 +7,30 @@
 using namespace std;
 
 
-static double V0 {35}; //MeV
+static double V0 {83}; //MeV
 static double mu  {0.50412241252*931.5}; //MeV
 static double hBar {6.582119569}; //Mev*s
-static double constQ{(2*mu)/pow(hBar,2)};//{0.0483};//
+//static double constQ {(2*mu)/pow(hBar,2)};
+static double constQ {0.0483};
 
-static double dh {0.01};
-static double accuracy {pow(10, -3)};
-static double R {2};
-static double xMatch {1.05};
+static double dh {0.001};
+static double accuracy {pow(10, -6)};
+static double R {5};
+static double xMatch {R};
 static double farValue {0.00001};
-static double farX {10};
+static double farX {15};
 static double startE {0};
-static double endE {10};
+static double endE {4};
 
 
 double Vr(double radius, double V){
-    if (abs(radius)<R) return -V;
-    else return 0;
+    //return pow(radius, 2);
+    if (abs(radius)<R) return 0;
+    else return V0;
 }
 
  double kSq(double radius, double E){
-    return (constQ)*(E+Vr(radius, V0));
+    return -(constQ)*(E-Vr(radius, V0));
 }
 
  double kSq2(double radius, double E){
@@ -76,7 +78,7 @@ void MainWindow::plotRK4(){
     int sizeLeft {static_cast<int>((xMatch+farX)/dh)};
     int sizeRight {static_cast<int>((abs(xMatch-farX))/dh)};
 
-    y1[0] = -farValue;
+    y1[0] = farValue;
     y1[1]= -sqrt(E*constQ)*y1[0];
     y2[0] = farValue;
     y2[1]= y1[1];
@@ -136,20 +138,20 @@ void MainWindow::plotRK4(){
 
     for (int i {0}; i<sizeLeft; ++i){
         leftWave[i] = pow(leftWave[i],2);
-        sum += leftWave[i];
+        if (abs(leftWave[i])>sum) sum = leftWave[i];
     }
     for (int i {0}; i<sizeRight; ++i){
         rightWave[i] = pow(rightWave[i]*renorm,2);
-        sum += rightWave[i];
+        if (abs(leftWave[i])>sum) sum = rightWave[i];
     }
 
-    sum = sum*pow(10,-4);
+
 
     for (int i {0}; i<sizeLeft; ++i){
-        m_plot1->updatePlot1(-farX+i*dh, leftWave[i]/sum);
+        m_plot1->updatePlot1(-farX+i*dh, leftWave[i]/sum+E);
     }
     for (int i {0}; i<sizeRight; ++i){
-        m_plot1->updatePlot2(farX-i*dh, rightWave[i]/sum);
+        m_plot1->updatePlot2(farX-i*dh, rightWave[i]/sum+E);
     }
 
     m_label1->setText(QString::number(E)+" MeV");
@@ -234,20 +236,18 @@ void MainWindow::plotNumerov(){
 
     for (int i {0}; i<sizeLeft; ++i){
         leftWave[i] = pow(leftWave[i],2);
-        sum += leftWave[i];
+        if (abs(leftWave[i])>sum) sum = leftWave[i];
     }
     for (int i {0}; i<sizeRight; ++i){
         rightWave[i] = pow(rightWave[i]*renorm,2);
-        sum += rightWave[i];
+        if (abs(rightWave[i])>sum) sum = rightWave[i];
     }
-
-    sum = sum*pow(10,-4);
 
     for (int i {0}; i<sizeLeft; ++i){
-        m_plot2->updatePlot1(-farX+i*dh, leftWave[i]/sum);
+        m_plot2->updatePlot1(-farX+i*dh, leftWave[i]/sum+E);
     }
     for (int i {0}; i<sizeRight; ++i){
-        m_plot2->updatePlot2(farX-i*dh, rightWave[i]/sum);
+        m_plot2->updatePlot2(farX-i*dh, rightWave[i]/sum+E);
     }
 
     m_label2->setText(QString::number(E)+" MeV");
