@@ -27,7 +27,11 @@ $$\psi(x)\to e^{\kappa^2x},\ x\to-\infty$$
 <br/>
 
 ## Solving Method
+To establish this ode with boundary conditions, we combine our choice of ode solver with a searching method such as the bijection method to find the allowed energy level. Essentially we use two ode solvers with starting points from the left and right end away from the well and solve inwards towards the potential well. We then minimize the log derivative of the meeting point of both solved wave equations to find the best value for the allowed energy level.<br/>
+<br/>
+The log derivative is given by<br/>
 
+$$\triangle = \frac{\psi'_\text{left}/\psi_\text{left}-\psi'_\text{right}/\psi_\text{right}}{\psi'_\text{left}/\psi_\text{left}+\psi'_\text{right}/\psi_\text{right}}$$
 ## Numerov Method
 
 ## Program Example
