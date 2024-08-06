@@ -10,15 +10,20 @@ Plot::Plot( QWidget* parent) : QwtPlot(parent)
     //setAxisScale( QwtAxis::YLeft, -40, 5 );
     //setAxisScale( QwtAxis::XBottom, 0, 50.5 );
 
-    m_curve1 = new QwtPlotCurve();
-    m_curve1->setPen(Qt::blue, 1.5);
-    m_curve1->setCurveAttribute(QwtPlotCurve::Fitted, true);
-    m_curve1->attach(this);
 
-    m_curve2 = new QwtPlotCurve();
-    m_curve2->setPen(Qt::red, 1.5);
-    m_curve2->setCurveAttribute(QwtPlotCurve::Fitted, true);
-    m_curve2->attach(this);
+    for (int i {0}; i<4;++i){
+        m_curve1[i] = new QwtPlotCurve();
+        m_curve1[i]->setPen(Qt::blue, 1.5);
+        m_curve1[i]->setCurveAttribute(QwtPlotCurve::Fitted, true);
+        m_curve1[i]->attach(this);
+    }
+
+    for (int i {0}; i<4;++i){
+        m_curve2[i] = new QwtPlotCurve();
+        m_curve2[i]->setPen(Qt::red, 1.5);
+        m_curve2[i]->setCurveAttribute(QwtPlotCurve::Fitted, true);
+        m_curve2[i]->attach(this);
+    }
 
     m_curveWell = new QwtPlotCurve();
     m_curveWell->setPen(Qt::black, 2);
@@ -34,12 +39,12 @@ void Plot::plotWell(double x, double y){
     m_curveWell->setSamples(m_pointsWell);
 }
 
-void Plot::updatePlot1(double x, double y){
-    m_points1<<QPointF(x, y);
-    m_curve1->setSamples(m_points1);
+void Plot::updatePlot1(int i, double x, double y){
+    m_points1[i]<<QPointF(x, y);
+    m_curve1[i]->setSamples(m_points1[i]);
 }
 
-void Plot::updatePlot2(double x, double y){
-    m_points2<<QPointF(x, y);
-    m_curve2->setSamples(m_points2);
+void Plot::updatePlot2(int i, double x, double y){
+    m_points2[i]<<QPointF(x, y);
+    m_curve2[i]->setSamples(m_points2[i]);
 }

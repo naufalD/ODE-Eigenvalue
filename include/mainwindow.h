@@ -19,8 +19,8 @@ public:
 
 private:
     Plot *m_plot1;
-    QLabel *m_label1;
+    QLabel *m_label1[4];
     Plot *m_plot2;
-    QLabel *m_label2;
+    QLabel *m_label2[4];
 };
 #endif // MAINWINDOW_H
