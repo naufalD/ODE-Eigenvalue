@@ -11,7 +11,7 @@ double numerovODE(double h, double t, double E, double yMinus1, double yMinus2, 
     tempNum = 2.0*(1.0-5.0*tempH*kSq(t-h, E));
     numerator1 = tempNum*yMinus1;
 
-    tempNum = (1.0+tempH*kSq(t-2*h, E));
+    tempNum = (1.0+tempH*kSq(t-2.0*h, E));
     numerator2 = tempNum*yMinus2;
 
     double denominator {1.0+tempH*kSq(t,E)};
@@ -64,8 +64,8 @@ double deltaNormWave(vector<double> yL, vector<double>yR){
 double deltaNormWaveNumerov(vector<double> yL, vector<double>yR){
     double L {0};
     double R {0};
-    L = (yL[0]-yL[1])*yR[0];
-    R = (yR[0]-yR[1])*yL[0];
+    L = (yL[0]-yL[1])/yL[0];
+    R = (yR[0]-yR[1])/yR[0];
 
-    return (L-R)/(L+R);
+    return (L+R)/(L-R);
 }

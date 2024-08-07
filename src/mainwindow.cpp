@@ -13,10 +13,10 @@ static double hBarc {1974.6}; //eV*Angstrom
 static double constQ {(2*mu)/pow(hBarc,2)};
 //static double constQ {0.0483};
 
-static double dh {0.01};
+static double dh {0.001};
 static double accuracy {pow(10, -6)};
 static double R {3*0.529}; // angstrom
-static double xMatch {0.529};
+static double xMatch {0.25*0.529};
 static double farValue {0.00001};
 static double farX {15};
 static double startE {0};
@@ -59,6 +59,8 @@ MainWindow::MainWindow(QWidget *parent)
         m_plot2->plotWell(i, Vr(i, V0));
     }
 
+    //plotRK4logd();
+    //plotNumlogd();
     plotRK4();
     plotNumerov();
 
@@ -217,13 +219,19 @@ void MainWindow::plotNumerov(){
         vector<double> leftWave(sizeLeft, 0);
         vector<double> rightWave(sizeRight, 0);
 
-        while (abs(errorTerm)>accuracy&&rounds<10){
+        while (abs(errorTerm)>accuracy&&rounds<8){
             E = (E1+E2)/2.0;
             rounds +=1;
+            y11 = -farValue;
+            y12 = -farValue;
+            y1temp = 0;
+            y21 = farValue;
+            y22 = farValue;
+            y2temp = 0;
 
             for (int i {0}; i<sizeLeft; ++i){
                 y1temp = numerovODE(dh, -farX+i*dh, E, y11, y12, &kSq2);
-                leftWave[i] = y1temp;
+                leftWave[i]=y1temp;
                 if (i<sizeLeft-1){
                     y12=y11;
                     y11=y1temp;
@@ -251,8 +259,8 @@ void MainWindow::plotNumerov(){
             errorTerm = E2-E1;
         }
 
-        double renorm = y1temp/y2temp;
-        double sum {0};
+        double renorm = abs(y1temp/y2temp);
+        double sum {1};
 
         for (int i {0}; i<sizeLeft; ++i){
             leftWave[i] = pow(leftWave[i],2);
@@ -271,8 +279,121 @@ void MainWindow::plotNumerov(){
         }
 
         m_label2[index]->setText(QString::number(E)+" eV");
+
         E1 = E;
         if (E+20>V0)E2 = V0;
         else E2 = E+20;
     }
+}
+
+void MainWindow::plotRK4logd(){
+    vector<double> y1 {0,0};
+    vector<double> y2 {0,0};
+    int sizeLeft {static_cast<int>((xMatch+farX)/dh)};
+    int sizeRight {static_cast<int>((abs(xMatch-farX))/dh)};
+
+    for (double E{0}; E<V0; E+=0.5){
+        y1[0] = farValue;
+        y1[1]= -sqrt(E*constQ)*y1[0];
+        y2[0] = farValue;
+        y2[1]= y1[1];
+
+        double normDelta1 {1};
+
+        for (int i {0}; i<sizeLeft; ++i){
+            y1 = odeRK4(dh, -farX+i*dh, E, y1, &theFunction);
+        }
+
+        for (int i {0}; i<sizeRight; ++i){
+            y2 = odeRK4(-dh, farX-i*dh, E, y2, &theFunction);
+        }
+        normDelta1 = deltaNormWave(y1, y2);
+        m_plot1->updatePlot1(0, E, normDelta1);
+    }
+}
+
+void MainWindow::plotNumlogd(){
+
+    double normDelta1 {1};
+
+    int sizeLeft {static_cast<int>((xMatch+farX)/dh)};
+    int sizeRight {static_cast<int>((abs(xMatch-farX))/dh)};
+
+    for (double E {0};E<V0; E+=0.05){
+        double y11 {-farValue};
+        double y12 {-farValue};
+        double y1temp {0};
+        double y21 {farValue};
+        double y22 {farValue};
+        double y2temp {0};
+
+        for (int i {0}; i<sizeLeft; ++i){
+            y1temp = numerovODE(dh, -farX+i*dh, E, y11, y12, &kSq2);
+            if (i<sizeLeft-1){
+                y12=y11;
+                y11=y1temp;
+            }
+        }
+
+        for (int i {0}; i<sizeRight; ++i){
+            y2temp = numerovODE(-dh, farX-i*dh, E, y21, y22, &kSq2);
+            if (i<sizeRight-1){
+                y22=y21;
+                y21=y2temp;
+            }
+        }
+        normDelta1 = deltaNormWaveNumerov({y1temp, y11}, {y2temp, y21});
+        //m_plot2->updatePlot1(0, E, normDelta1);
+    }
+
+    double y11 {-farValue};
+    double y12 {-farValue};
+    double y1temp {0};
+    double y21 {farValue};
+    double y22 {farValue};
+    vector<double> leftWave(sizeLeft, 0);
+    vector<double> rightWave(sizeRight, 0);
+
+    double y2temp {0};
+    double E=2.67578125;
+    double sum {0};
+
+    for (int i {0}; i<sizeLeft; ++i){
+        y1temp = numerovODE(dh, -farX+i*dh, E, y11, y12, &kSq2);
+        leftWave[i]=y1temp;
+        if (i<sizeLeft-1){
+            y12=y11;
+            y11=y1temp;
+        }
+    }
+
+    for (int i {0}; i<sizeRight; ++i){
+        y2temp = numerovODE(-dh, farX-i*dh, E, y21, y22, &kSq2);
+        rightWave[i] = y2temp;
+        if (i<sizeRight-1){
+            y22=y21;
+            y21=y2temp;
+        }
+    }
+
+    double renorm = y1temp/y2temp;
+
+    for (int i {0}; i<sizeLeft; ++i){
+        leftWave[i] = pow(leftWave[i],2);
+        if (abs(leftWave[i])>sum) sum = leftWave[i];
+    }
+    for (int i {0}; i<sizeRight; ++i){
+        rightWave[i] = pow(rightWave[i]*renorm,2);
+        if (abs(rightWave[i])>sum) sum = rightWave[i];
+    }
+
+    for (int i {0}; i<sizeLeft; ++i){
+        m_plot2->updatePlot1(1, -farX+i*dh, leftWave[i]/sum);
+    }
+    for (int i {0}; i<sizeRight; ++i){
+        m_plot2->updatePlot2(1, farX-i*dh, rightWave[i]/sum);
+        m_label2[0]->setText(QString::number(E)+" eV");
+    }
+
+
 }

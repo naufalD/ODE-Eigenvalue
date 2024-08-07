@@ -16,6 +16,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     void plotRK4();
     void plotNumerov();
+    void plotRK4logd();
+    void plotNumlogd();
 
 private:
     Plot *m_plot1;
