@@ -13,7 +13,7 @@ static double hBarc {1974.6}; //eV*Angstrom
 static double constQ {(2*mu)/pow(hBarc,2)};
 //static double constQ {0.0483};
 
-static double dh {0.001};
+static double dh {0.01};
 static double accuracy {pow(10, -6)};
 static double R {3*0.529}; // angstrom
 static double xMatch {0.25*0.529};
@@ -219,9 +219,9 @@ void MainWindow::plotNumerov(){
         vector<double> leftWave(sizeLeft, 0);
         vector<double> rightWave(sizeRight, 0);
 
-        while (abs(errorTerm)>accuracy&&rounds<8){
+
+        while (abs(errorTerm)>accuracy&&rounds<1000){
             E = (E1+E2)/2.0;
-            rounds +=1;
             y11 = -farValue;
             y12 = -farValue;
             y1temp = 0;
@@ -257,18 +257,20 @@ void MainWindow::plotNumerov(){
                 normDelta1 = normDelta2;
             }
             errorTerm = E2-E1;
+
+            rounds +=1;
         }
 
-        double renorm = abs(y1temp/y2temp);
-        double sum {1};
+        double renorm = y1temp/y2temp;
+        double sum {0};
 
         for (int i {0}; i<sizeLeft; ++i){
             leftWave[i] = pow(leftWave[i],2);
-            if (abs(leftWave[i])>sum) sum = leftWave[i];
+            if (leftWave[i]>sum) sum = leftWave[i];
         }
         for (int i {0}; i<sizeRight; ++i){
             rightWave[i] = pow(rightWave[i]*renorm,2);
-            if (abs(rightWave[i])>sum) sum = rightWave[i];
+            if (rightWave[i]>sum) sum = rightWave[i];
         }
 
         for (int i {0}; i<sizeLeft; ++i){
@@ -280,9 +282,23 @@ void MainWindow::plotNumerov(){
 
         m_label2[index]->setText(QString::number(E)+" eV");
 
-        E1 = E;
-        if (E+20>V0)E2 = V0;
-        else E2 = E+20;
+        switch (index){
+        case 0:
+            E1 = 10.3;
+            E2 = 10.6;
+            E = (E1+E2)/2.0;
+            break;
+        case 1:
+            E1=E;
+            E2=E+20;
+            E = (E1+E2)/2.0;
+            break;
+        case 2:
+            E1=E;
+            E2=E+20;
+            E = (E1+E2)/2.0;
+            break;
+        }
     }
 }
 
@@ -315,7 +331,6 @@ void MainWindow::plotRK4logd(){
 void MainWindow::plotNumlogd(){
 
     double normDelta1 {1};
-
     int sizeLeft {static_cast<int>((xMatch+farX)/dh)};
     int sizeRight {static_cast<int>((abs(xMatch-farX))/dh)};
 
@@ -343,7 +358,7 @@ void MainWindow::plotNumlogd(){
             }
         }
         normDelta1 = deltaNormWaveNumerov({y1temp, y11}, {y2temp, y21});
-        //m_plot2->updatePlot1(0, E, normDelta1);
+        m_plot2->updatePlot1(0, E, normDelta1);
     }
 
     double y11 {-farValue};
@@ -355,7 +370,7 @@ void MainWindow::plotNumlogd(){
     vector<double> rightWave(sizeRight, 0);
 
     double y2temp {0};
-    double E=2.67578125;
+    double E=37.9589080810546875;
     double sum {0};
 
     for (int i {0}; i<sizeLeft; ++i){
@@ -388,10 +403,10 @@ void MainWindow::plotNumlogd(){
     }
 
     for (int i {0}; i<sizeLeft; ++i){
-        m_plot2->updatePlot1(1, -farX+i*dh, leftWave[i]/sum);
+        m_plot2->updatePlot1(1, -farX+i*dh, leftWave[i]/sum+E);
     }
     for (int i {0}; i<sizeRight; ++i){
-        m_plot2->updatePlot2(1, farX-i*dh, rightWave[i]/sum);
+        m_plot2->updatePlot2(1, farX-i*dh, rightWave[i]/sum+E);
         m_label2[0]->setText(QString::number(E)+" eV");
     }
 
