@@ -35,3 +35,4 @@ $$\triangle = \frac{\psi'_\text{left}/\psi_\text{left}-\psi'_\text{right}/\psi_\
 ## Numerov Method
 
 ## Program Example
+![img](media/program.png)
