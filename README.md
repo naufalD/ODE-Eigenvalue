@@ -15,7 +15,8 @@ Where we have the potential function $V(x)$, the wavefunction $\psi(x)$ and ener
 $$V(x)= \left\\{ \begin{array}{cc}
 -V_0 & |x|<a\\
 0 & |x|\geq a
-\end{array}\right.$$
+\end{array}
+\right.$$
 <br/>
 
 where $V_0$ is the depth of the well and $2a$ is the width of the well. The challenge of solving this is that the particle becomes bounded within the well. Because of this, we have to establish boundary conditions when solving the equation. In this case the boundary conditions are that the wavefunction vanish far from the potential well or<br/>
