@@ -36,6 +36,7 @@ To establish this ode with boundary conditions, we combine our choice of ode sol
 The log derivative is given by<br/>
 
 $$\triangle = \frac{\psi'_\text{left}/\psi_\text{left}-\psi'_\text{right}/\psi_\text{right}}{\psi'_\text{left}/\psi_\text{left}+\psi'_\text{right}/\psi_\text{right}}$$
+
 ## Numerov Method
 
 ## Program Example
