@@ -16,7 +16,7 @@ $$
 V(x)=  
 \begin{array}{cc}
     -V_0 & 1 \\
-    1 & |x|\geq a
+    1 & \left| x \right|\geq a
 \end{array}
 $$
 <br/>
