@@ -13,10 +13,11 @@ $$\frac{d^2\psi}{dx^2}+\frac{2m}{\hbar^2}V(x)\psi(x)=\frac{2m}{\hbar^2}E\psi(x)$
 Where we have the potential function $V(x)$, the wavefunction $\psi(x)$ and energy level $E$ which we are trying to find here. We denote $\frac{2m}{\hbar^2}E$ as $\kappa^2$ from now on for ease of notation. In this case, assuming V(x) describes a finite square potential with the form <br/>
 
 $$
-V(x)=  \\begin{array}{cc}
--V_0 & |x|<a \\\\
-0 & |x|\\geq a
-\\end{array}
+V(x)=  
+\begin{array}{cc}
+    -V_0 & |x|<a \\\\
+    0 & |x| \\geq a
+\end{array}
 $$
 <br/>
 
