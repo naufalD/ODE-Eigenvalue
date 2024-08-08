@@ -15,7 +15,7 @@ Where we have the potential function $V(x)$, the wavefunction $\psi(x)$ and ener
 $$
 V(x)=  
 \begin{array}{cc}
-    1 & 1 \\
+    -V_0 & |x|<a \\
     1 & 1
 \end{array}
 $$
