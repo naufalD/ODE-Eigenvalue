@@ -15,8 +15,8 @@ Where we have the potential function $V(x)$, the wavefunction $\psi(x)$ and ener
 $$
 V(x)=  
 \begin{array}{cc}
-    -V_0 & |x|<a \\
-    1 & 1
+    -V_0 & 1 \\
+    1 & |x|\geq a
 \end{array}
 $$
 <br/>
